@@ -64,3 +64,132 @@ A user manual is included with the package:
 LongFPLS_1.0.0.pdf
 
 The manual contains detailed descriptions of the exported functions, their arguments, returned objects, and example workflows.
+
+# Example run for Case-1 in simulation settings
+
+dat <- simulate_data(
+  case = "1",
+  sigma_x = 0.05,
+  sigma_y = 0.35,
+  sigma_b = 0.50
+)
+
+X <- dat$X
+y <- dat$y
+Z <- dat$Z
+subject <- dat$subject
+times <- dat$times
+tps <- dat$tps
+mu_true <- dat$mu_true
+btrue <- dat$truth$beta_true
+theta_true <- dat$theta_true
+
+prep <- prepare_lfpls(
+  y = y,
+  subject = subject,
+  times = times,
+  X = X,
+  tps = tps,
+  scalar_cov = Z,
+  presmooth_X = TRUE,
+  df_spline = 10,
+  df_time_eta = 5,
+  df_time_Z = 4,
+  lme_maxiter = 80
+)
+
+fit_lfpls <- tune_lfpls(
+  prep = prep,
+  n_comp_b0_grid = 1:5,
+  n_comp_b1_grid = 1:5,
+  n_comp_u_grid  = 1:5,
+  lambda_b_grid  = c(1e-2, 5e-2, 1e-1, 5e-1),
+  max_iter = 6,
+  tol = 1e-4,
+  ortho = TRUE,
+  ridge = 1e-10,
+  lme_maxiter = 80
+)
+
+pred_lfpls <- as.numeric(predict(fit_lfpls$fit))
+mse_lfpls <- mean((mu_true - pred_lfpls)^2)
+library(nlme)
+fe <- fixed.effects(fit_lfpls$fit)
+theta_hat <- fe[grep("^S_", names(fe))]
+scalar_mse_lfpls <- mean((theta_true - theta_hat)^2)
+beta_lfpls <- (fit_lfpls$b0 + fit_lfpls$b1 + fit_lfpls$bU) / 3
+
+ise_lfpls <- sum(diff(tps) * (
+  head((btrue - beta_lfpls)^2, -1) +
+    tail((btrue - beta_lfpls)^2, -1)
+) / 2)
+
+
+# Example run for Case-2 in simulation settings
+
+dat <- simulate_data(
+  case = "2",
+  sigma_x = 0.05,
+  sigma_y = 0.35,
+  sigma_b = 0.50
+)
+
+X <- dat$X
+y <- dat$y
+Z <- dat$Z
+subject <- dat$subject
+times <- dat$times
+tps <- dat$tps
+mu_true <- dat$mu_true
+theta_true <- dat$theta_true
+
+beta_B_true <- dat$truth$beta_B_true
+beta_U_true <- dat$truth$beta_U_true
+
+prep <- prepare_lfpls(
+  y = y,
+  subject = subject,
+  times = times,
+  X = X,
+  tps = tps,
+  scalar_cov = Z,
+  presmooth_X = TRUE,
+  df_spline = 10,
+  df_time_eta = 5,
+  df_time_Z = 4,
+  lme_maxiter = 80
+)
+
+fit_lfpls <- tune_lfpls(
+  prep = prep,
+  n_comp_b0_grid = 1:5,
+  n_comp_b1_grid = 1:5,
+  n_comp_u_grid  = 1:5,
+  lambda_b_grid  = c(1e-2, 5e-2, 1e-1),
+  max_iter = 6,
+  tol = 1e-4,
+  ortho = TRUE,
+  ridge = 1e-10,
+  lme_maxiter = 80
+)
+
+pred_lfpls <- as.numeric(predict(fit_lfpls$fit))
+mse_lfpls <- mean((mu_true - pred_lfpls)^2)
+library(nlme)
+fe <- fixed.effects(fit_lfpls$fit)
+theta_hat <- fe[grep("^S_", names(fe))]
+scalar_mse_lfpls <- mean((theta_true - theta_hat)^2)
+beta_B_lfpls <- (fit_lfpls$b0 + fit_lfpls$b1) / 2
+beta_U_lfpls <- fit_lfpls$bU
+
+ise_B_lfpls <- sum(diff(tps) * (
+  head((beta_B_true - beta_B_lfpls)^2, -1) +
+    tail((beta_B_true - beta_B_lfpls)^2, -1)
+) / 2)
+
+ise_U_lfpls <- sum(diff(tps) * (
+  head((beta_U_true - beta_U_lfpls)^2, -1) +
+    tail((beta_U_true - beta_U_lfpls)^2, -1)
+) / 2)
+
+
