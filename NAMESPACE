@@ -1,0 +1,13 @@
+export(prepare_lfpls)
+export(lfpls_iterate)
+export(tune_lfpls)
+export(simulate_data)
+
+importFrom(MASS, ginv, mvrnorm)
+
+importFrom(nlme, lme, lmeControl, VarCorr, fixed.effects)
+
+importFrom(splines, bs, ns)
+
+importFrom(stats, BIC, as.formula, dnorm, model.matrix,
+           rnorm, runif, smooth.spline, var)

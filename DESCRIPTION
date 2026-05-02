@@ -1,0 +1,38 @@
+Package: LongFPLS
+Type: Package
+Title: Longitudinal Functional Partial Least Squares Regression
+Version: 1.0.0
+Authors@R: c(
+    person("Ufuk", "Beyaztas",
+      email = "ufuk.beyaztas@marmara.edu.tr",
+      role = c("aut", "cre", "cph"),
+      comment = c(ORCID = "0000-0002-5208-4950")),
+    person("Deniz", "Inan",
+      role = "aut"),
+    person("Nuriye", "Sancar",
+      role = "aut"),
+    person("Beste Hamiye", "Beyaztas",
+      role = "aut"),
+    person("Boran", "Sekeroglu",
+      role = "aut")
+  )
+Description: Functions for fitting longitudinal functional partial least
+    squares regression models for longitudinal scalar-on-function data.
+    The package includes tools for simulation-based data generation,
+    pilot decomposition of longitudinal functional predictors into
+    subject-specific functional intercept, subject-specific functional
+    slope, and visit-specific deviation components, residualized
+    supervised partial least squares construction, REML-based mixed-model
+    fitting, coefficient-function reconstruction, smoothing, and BIC-based
+    tuning of LFPLS components.
+Depends: R (>= 3.5.0)
+Imports:
+    MASS,
+    nlme,
+    splines,
+    stats
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
+RoxygenNote: 7.1.2
