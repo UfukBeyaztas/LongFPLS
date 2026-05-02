@@ -41,3 +41,26 @@ You can install the development version of **LongFPLS** from GitHub:
 ```r
 install.packages("remotes")
 remotes::install_github("UfukBeyaztas/LongFPLS")
+
+Then load the package:
+
+library(LongFPLS)
+
+📘 Main Functions
+
+The package contains four main user-facing functions:
+
+Function	Description
+simulate_data()	Simulates longitudinal scalar-on-function data under different functional-effect scenarios.
+prepare_lfpls()	Prepares the data object required for LFPLS fitting.
+lfpls_iterate()	Fits LFPLS for fixed tuning parameters.
+tune_lfpls()	Selects LFPLS tuning parameters by BIC-based grid search.
+
+
+📄 Manual
+
+A user manual is included with the package:
+
+LongFPLS_1.0.0.pdf
+
+The manual contains detailed descriptions of the exported functions, their arguments, returned objects, and example workflows.
